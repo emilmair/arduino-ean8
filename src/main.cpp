@@ -3,8 +3,6 @@
 #include "../include/processing.h"
 
 #define THRESHOLD 750
-#define WHITE 1
-#define BLACK 0
 #define BUFFER_LENGTH 250 // datapoints/8
 #define TIMEOUT 500000 // microseconds
 

@@ -15,5 +15,5 @@ upload:
 
 test:
 	make clean
-	g++ -I include/processing.h test/main.cpp src/processing.cpp -o build/test
+	g++ -I include/processing.h src/processing.cpp test/main.cpp -o build/test
 	./build/test

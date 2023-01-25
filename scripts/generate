@@ -17,16 +17,25 @@ for bit in barcode:
         scaled_barcode += bit
 
 # generate c-style array
-scaled_barcode_save = scaled_barcode + "00000000"
+scaled_barcode_save = scaled_barcode + "1111111111111111111111"
+
 bytearray = []
-for i in range(math.ceil(len(scaled_barcode)/8)):
-    bytestring = scaled_barcode_save[i*8:i*8+8]
+for i in range(math.ceil(len(scaled_barcode_save)/8)):
+    if i*8+8 > len(scaled_barcode_save): bytestring = scaled_barcode_save[i*8:i*8+8] + "0"*(i*8+8-len(scaled_barcode_save))
+    else:
+        bytestring = scaled_barcode_save[i*8:i*8+8]
     bytearray.append(int(bytestring, 2))
-result = "{" + str(bytearray)[1:-2] + "}"
+    print(f"byte{i} = {bytestring} = {int(bytestring, 2)}")
+
+result = "{" + str(bytearray)[1:-1] + "}"
 
 # overwrite test data
 with open("test/main.cpp") as f:
     lines = f.readlines()
 lines[0] = f"#define DATA {result}\n"
+lines[1] = f"#define LENGTH {len(bytearray)}\n"
+lines[2] = f"#define LENGTH_BITS {len(scaled_barcode_save)}\n"
 with open("test/main.cpp", "w") as f:
     f.writelines(lines)
+
+
