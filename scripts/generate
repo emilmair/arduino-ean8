@@ -1,0 +1,32 @@
+#!/usr/bin/python3
+
+import sys
+import math
+
+# process command line arguments
+if len(sys.argv) < 3:
+    print("syntax: generate <bits> <factor>")
+    exit()
+factor = int(sys.argv[2])
+barcode = sys.argv[1]
+
+# scale datapoints
+scaled_barcode = ""
+for bit in barcode:
+    for i in range(factor):
+        scaled_barcode += bit
+
+# generate c-style array
+scaled_barcode_save = scaled_barcode + "00000000"
+bytearray = []
+for i in range(math.ceil(len(scaled_barcode)/8)):
+    bytestring = scaled_barcode_save[i*8:i*8+8]
+    bytearray.append(int(bytestring, 2))
+result = "{" + str(bytearray)[1:-2] + "}"
+
+# overwrite test data
+with open("test/main.cpp") as f:
+    lines = f.readlines()
+lines[0] = f"#define DATA {result}\n"
+with open("test/main.cpp", "w") as f:
+    f.writelines(lines)

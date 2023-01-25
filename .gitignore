@@ -3,5 +3,4 @@
 .pio
 build
 lib
-test
 platformio.ini
