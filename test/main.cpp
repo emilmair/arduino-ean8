@@ -25,18 +25,19 @@ void evaluate(uint8_t* buffer, uint32_t bytes, uint32_t bits) {
 
     // process datapoints into ean8 bits
     uint8_t* processed_buffer = process_buffer(buffer, length_in_bits);
+    printf("\nprocessed data:\n");
     PRINT(processed_buffer, BITS);
 
-    /*
+
     // validate ean8 code and strip start/stop/separator bits
     uint8_t* validated_buffer = validate_ean8(processed_buffer);
+    printf("\nvalidated ean8 data:\n");
+    PRINT(validated_buffer, 64);
 
     // decode ean8 code
     uint16_t digit1 = decode_ean8(validated_buffer);
     uint16_t digit2 = decode_ean8(validated_buffer+4);
-    printf("%hu", digit1);
-    printf("%hu", digit2);
-    */
+    printf("\ndecoded ean8 data:\n%hu%hu\n", digit1, digit2);
 }
 
 
