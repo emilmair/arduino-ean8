@@ -1,7 +1,7 @@
 #ifndef ARDUINO_EAN8_PROCESSING_H
 #define ARDUINO_EAN8_PROCESSING_H
 
-#include <cstdint>
+#include <stdint.h>
 #include <stdio.h>
 
 #define BITS 67
@@ -9,7 +9,11 @@
 #define BLACK 0
 #define GET_BIT(BUFFER, B) get_bit((BUFFER), (B)/8, 7-(B-(((B)/8)*8)))
 #define SET_BIT(BUFFER, B, V) set_bit((BUFFER), (B)/8, 7-(B-(((B)/8)*8)), (V))
-#define PRINT(BUFFER, SIZE) printf("(%i) [0: ", SIZE); for (int I = 0; I < (SIZE); I++) { printf("%i", GET_BIT(BUFFER, I)); if (I % 8 == 7 && I < SIZE-1) {printf("] [%i: ", I/8+1);}} printf("]\n")
+#ifndef UPLOAD
+#define MSG(S) printf(S)
+#define MSGC(C) printf("%c", (C))
+#define PRINT(BUFFER, SIZE) printf("(%i) [0: ", SIZE); for (uint32_t I = 0; I < (SIZE); I++) { printf("%i", GET_BIT(BUFFER, I)); if (I % 8 == 7 && I < SIZE-1) {printf("] [%i: ", I/8+1);}} printf("]\n")
+#endif
 
 /// set bit at buffer[byte] to value.
 void set_bit(uint8_t* buffer, uint32_t byte, uint8_t bit, uint8_t value);
@@ -27,9 +31,12 @@ uint32_t remove_trailing_bits(uint8_t* buffer, uint32_t bytes, uint8_t value);
 uint8_t* process_buffer(uint8_t* cleaned_buffer, uint32_t length_in_bits);
 
 /// process bits into an array of 8 bytes, the least significant 7 bits of each byte representing one digit. assert that the code is valid.
-uint8_t* validate_ean8(uint8_t* processed_buffer);
+uint8_t* compress_ean8(uint8_t* processed_buffer);
 
-/// decode 4 bytes, the least significant 7 bits of each byte containing an ean8 digit, into one integer.
-uint16_t decode_ean8(uint8_t* ean8_code);
+/// returns null-terminated char array of what is wrong with your data
+const char* validate_ean8(uint8_t* compressed_buffer);
+
+/// returns ean8 digit from least significant 7 bits
+uint8_t ean8map(uint8_t code);
 
 #endif //ARDUINO_EAN8_PROCESSING_H

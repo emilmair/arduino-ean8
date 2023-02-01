@@ -10,36 +10,42 @@
 void evaluate(uint8_t* buffer, uint32_t bytes, uint32_t bits) {
     uint32_t length_in_bits = bytes*8;
 
-    printf("\ninitial buffer:\n");
+    MSG("\ninitial buffer:\n");
     PRINT(buffer, length_in_bits);
 
     // fill bits containing no data
     fill_bits_without_data(buffer, bytes, bits, WHITE);
-    printf("\nbuffer with filled empty datapoints:\n");
+    MSG("\nbuffer with filled empty datapoints:\n");
     PRINT(buffer, length_in_bits);
 
     // strip trailing WHITE datapoints
     length_in_bits = remove_trailing_bits(buffer, bytes, WHITE);
-    printf("\nbuffer with removed trailing bits:\n");
+    MSG("\nbuffer with removed trailing bits:\n");
     PRINT(buffer, length_in_bits);
 
     // process datapoints into ean8 bits
     uint8_t* processed_buffer = process_buffer(buffer, length_in_bits);
-    printf("\nprocessed data:\n");
+    free(buffer);
+    MSG("\nprocessed data:\n");
     PRINT(processed_buffer, BITS);
 
-
     // validate ean8 code and strip start/stop/separator bits
-    uint8_t* validated_buffer = validate_ean8(processed_buffer);
-    printf("\nvalidated ean8 data:\n");
-    PRINT(validated_buffer, 64);
+    uint8_t* compressed_buffer = compress_ean8(processed_buffer);
+    free(processed_buffer);
+    MSG("\ncompressed ean8 data:\n");
+    PRINT(compressed_buffer, 64);
+
+    // validate
+    MSG("\nean8 validation result:\n");
+    MSG(validate_ean8(compressed_buffer));
 
     // decode ean8 code
-    uint16_t digit1 = decode_ean8(validated_buffer);
-    uint16_t digit2 = decode_ean8(validated_buffer+4);
-    printf("\ndecoded ean8 data:\n%hu%hu\n", digit1, digit2);
+    MSG("\ndecoded ean8 data (x means unknown value): \n");
+    for (uint32_t i = 0; i < 8; i++) {
+        MSGC(ean8map(compressed_buffer[i])+48);
+    }
+    MSG("\n");
 }
-
 
 int main() {
     printf("main\n");
