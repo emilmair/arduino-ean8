@@ -5,7 +5,9 @@ This repository contains everything related to the EAN-8 barcode scanner project
 The scanner uses a Phototransitor combined with a LED to read an EAN-8 barcode while
 moving across it at a constant speed. There is some additional components needed
 to read the brightness values as analog voltages. Use following circuit drawing as a template:
-![barcode scanner circuit drawing](./images/circuit.png) [TODO]
+<p align="center">
+<img width="50%" src="images/circuit.png" alt="Banner">
+</p>
 
 ### Usage
 For simplicity, it is recommended to use platformio to manage this project.
